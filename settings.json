@@ -1,0 +1,14 @@
+{
+    "view": "default",
+    "time_format": "24h",
+    "digital_color": "green",
+    "city": "Madrid",
+    "country": "España",
+    "latitude": 40.4168,
+    "longitude": -3.7038,
+    "timezone": "Europe/Madrid",
+    "night_mode_auto": true,
+    "night_mode_start_hour": 23,
+    "night_mode_end_hour": 7,
+    "night_mode_manual": false
+}
