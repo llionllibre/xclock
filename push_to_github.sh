@@ -1,6 +1,6 @@
 #!/bin/bash
 # ========================================================
-# Script para inicializar y subir Xclock a GitHub desde WSL
+# Script to initialize and push Xclock to GitHub from WSL
 # ========================================================
 
 set -e
@@ -9,80 +9,80 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 cd "$DIR"
 
 echo "========================================================"
-echo "      Subida de Xclock a GitHub (WSL)                   "
+echo "      Push Xclock to GitHub (WSL)                       "
 echo "========================================================"
 
-# 1. Configurar safe.directory para evitar advertencias de permisos de Windows en WSL
+# 1. Configure safe.directory to avoid Windows permission warnings in WSL
 git config --global --add safe.directory "$DIR"
 
-# 2. Comprobar identidad de Git en WSL
+# 2. Check Git identity in WSL
 USER_NAME=$(git config user.name || true)
 USER_EMAIL=$(git config user.email || true)
 
 if [ -z "$USER_NAME" ]; then
-    read -p "Introduce tu nombre para Git (ej: Llion): " INPUT_NAME
+    read -p "Enter your name for Git (e.g.: Llion): " INPUT_NAME
     git config --global user.name "$INPUT_NAME"
 fi
 
 if [ -z "$USER_EMAIL" ]; then
-    read -p "Introduce tu email de GitHub: " INPUT_EMAIL
+    read -p "Enter your GitHub email: " INPUT_EMAIL
     git config --global user.email "$INPUT_EMAIL"
 fi
 
-# 3. Inicializar repositorio si no existe
+# 3. Initialize repository if it does not exist
 if [ ! -d ".git" ]; then
-    echo "[+] Inicializando repositorio Git local..."
+    echo "[+] Initializing local Git repository..."
     git init
     git branch -M main
 fi
 
-# 4. Comprobar / Configurar el remoto de GitHub
+# 4. Check / Configure the GitHub remote
 REMOTE_URL=$(git remote get-url origin 2>/dev/null || true)
 
 if [ -z "$REMOTE_URL" ]; then
     echo ""
-    echo "Pega la URL de tu repositorio de GitHub."
-    echo "Ejemplo HTTPS: https://github.com/tu-usuario/xclock.git"
-    echo "Ejemplo SSH:   git@github.com:tu-usuario/xclock.git"
-    read -p "URL del repositorio: " REPO_URL
+    echo "Paste your GitHub repository URL."
+    echo "HTTPS example: https://github.com/your-username/xclock.git"
+    echo "SSH example:   git@github.com:your-username/xclock.git"
+    read -p "Repository URL: " REPO_URL
     
     if [ -z "$REPO_URL" ]; then
-        echo "[!] Error: No se proporcionó ninguna URL."
+        echo "[!] Error: No URL was provided."
         exit 1
     fi
     git remote add origin "$REPO_URL"
 else
-    echo "[i] Remoto actual configurado: $REMOTE_URL"
-    read -p "¿Deseas cambiar la URL del repositorio? (s/N): " CHANGE_REMOTE
-    if [[ "$CHANGE_REMOTE" =~ ^[sS]$ ]]; then
-        read -p "Nueva URL del repositorio: " NEW_REPO_URL
+    echo "[i] Current remote configured: $REMOTE_URL"
+    read -p "Do you want to change the repository URL? (y/N): " CHANGE_REMOTE
+    if [[ "$CHANGE_REMOTE" =~ ^[yY]$ ]]; then
+        read -p "New repository URL: " NEW_REPO_URL
         git remote set-url origin "$NEW_REPO_URL"
     fi
 fi
 
-# 5. Añadir archivos y hacer commit
+# 5. Add files and commit
 echo ""
-echo "[+] Añadiendo archivos al commit..."
+echo "[+] Adding files to commit..."
 git add .
 
-read -p "Mensaje del commit [Subida inicial de Xclock]: " COMMIT_MSG
+read -p "Commit message [Initial upload of Xclock]: " COMMIT_MSG
 if [ -z "$COMMIT_MSG" ]; then
-    COMMIT_MSG="Subida inicial de Xclock"
+    COMMIT_MSG="Initial upload of Xclock"
 fi
 
 if git diff-index --quiet HEAD -- 2>/dev/null; then
-    echo "[i] No hay cambios pendientes para commit."
+    echo "[i] No pending changes to commit."
 else
     git commit -m "$COMMIT_MSG"
 fi
 
-# 6. Subir a GitHub
+# 6. Push to GitHub
 echo ""
-echo "[+] Subiendo a GitHub (rama main)..."
-echo "Nota: Si usas HTTPS y te pide contraseña, recuerda que GitHub requiere un Personal Access Token (PAT)."
+echo "[+] Pushing to GitHub (main branch)..."
+echo "Note: If using HTTPS and prompted for a password, remember that GitHub requires a Personal Access Token (PAT)."
 git push -u origin main
 
 echo ""
 echo "========================================================"
-echo " ¡Repositorio subido con éxito a GitHub!                "
+echo " Repository pushed to GitHub successfully!               "
 echo "========================================================"

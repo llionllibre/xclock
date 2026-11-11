@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Xclock</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <script defer src="{{ url_for('static', filename='js/settings.js') }}"></script>
+  <script defer src="{{ url_for('static', filename='js/clock.js') }}"></script>
+</head>
+<body>
+  <div class="screen-container">
+
+    <!-- ========================================== -->
+    <!-- VISTA 1: DASHBOARD COMPLETO (DEFAULT)      -->
+    <!-- ========================================== -->
+    <div id="viewDefault" class="view-panel">
+      <!-- Barra superior: Solo fecha en formato DD/MM/YYYY (Grande) y Controles -->
+      <header class="top-bar">
+        <div class="date-container">
+          <span id="screenDate" class="date-text">--/--/----</span>
+        </div>
+        <div class="top-actions">
+          <div id="connectionStatus" class="status-indicator" data-state="connecting" role="status">
+            <span class="wifi-dot"></span>
+            <span id="connectionLabel" class="status-label" data-i18n="connecting">Connecting...</span>
+          </div>
+          <button class="btn-icon btn-open-settings" title="Settings" aria-label="Settings" data-i18n-aria-label="settings_title">
+            ⚙️
+          </button>
+        </div>
+      </header>
+
+      <!-- Zona Central: Reloj Digital Gigante -->
+      <main class="clock-display">
+        <div class="time-wrapper">
+          <span id="screenHours" class="time-digit">--</span>
+          <span class="time-colon">:</span>
+          <span id="screenMinutes" class="time-digit">--</span>
+          <div class="seconds-ampm-group">
+            <span id="screenSeconds" class="time-seconds">--</span>
+            <span id="screenAmpm" class="ampm-badge hidden">PM</span>
+          </div>
+        </div>
+      </main>
+
+      <!-- Zona Inferior: Sensores (Salón Nest y Exterior Open-Meteo) -->
+      <footer class="widgets-container">
+        <!-- Tarjeta Salón (Google Nest) -->
+        <div class="card card-indoor">
+          <div class="card-content">
+            <div class="card-header">
+              <span class="card-icon-svg">🛋️</span>
+              <span class="card-title" data-i18n="indoor_title">Living Room (Nest)</span>
+            </div>
+            <div class="temp-row">
+              <span id="indoorTemp" class="temp-value">--.-</span>
+              <span class="temp-unit">°C</span>
+            </div>
+            <div class="card-meta">
+              <span><span data-i18n="humidity_label">Humidity</span>: <strong id="indoorHumidity">--%</strong></span>
+              <span class="separator">·</span>
+              <span id="indoorStatus" class="status-badge" data-i18n="loading">Loading...</span>
+            </div>
+            <div id="indoorUpdated" class="reading-updated"></div>
+          </div>
+        </div>
+
+        <!-- Tarjeta Exterior (Open-Meteo con Ciudad) -->
+        <div class="card card-outdoor">
+          <div class="card-content">
+            <div class="card-header">
+              <span id="weatherIcon" class="card-icon-svg"></span>
+              <span class="card-title"><span data-i18n="outdoor_title_prefix">Outdoor</span> (<span id="outdoorCity">--</span>)</span>
+            </div>
+            <div class="temp-row">
+              <span id="outdoorTemp" class="temp-value">--.-</span>
+              <span class="temp-unit">°C</span>
+            </div>
+            <div class="card-meta">
+              <span id="weatherCondition" data-i18n="loading">Loading...</span>
+              <span class="separator">·</span>
+              <span id="weatherMinMax">--° / --°</span>
+            </div>
+            <div class="reading-updated"><span id="outdoorStatus"></span> <span id="outdoorUpdated"></span></div>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+
+    <!-- ========================================== -->
+    <!-- VISTA 2: RELOJ RETRO FLIP FULLSCREEN       -->
+    <!-- ========================================== -->
+    <div id="viewFlip" class="view-panel view-flip-fullscreen hidden">
+      <button class="btn-icon btn-open-settings btn-floating-settings" title="Settings" aria-label="Settings" data-i18n-aria-label="settings_title">
+        ⚙️
+      </button>
+
+      <div id="flipAmpm" class="flip-ampm-badge hidden">PM</div>
+
+      <div class="flip-clock-stage fullscreen-stage">
+        <!-- Ficha Horas Gigante -->
+        <div class="flip-card flip-card-giant" id="flipHoursCard">
+          <div class="card-half card-top">
+            <span class="digit-text" id="flipHoursTop">00</span>
+          </div>
+          <div class="card-half card-bottom">
+            <span class="digit-text" id="flipHoursBottom">00</span>
+          </div>
+          <div class="card-flap flap-front" id="flipHoursFlapFront">
+            <span class="digit-text" id="flipHoursFlapFrontText">00</span>
+          </div>
+          <div class="card-flap flap-back" id="flipHoursFlapBack">
+            <span class="digit-text" id="flipHoursFlapBackText">00</span>
+          </div>
+          <div class="hinge hinge-left"></div>
+          <div class="hinge hinge-right"></div>
+          <div class="split-line"></div>
+        </div>
+
+        <!-- Separador de puntos vintage -->
+        <div class="flip-divider">
+          <span class="flip-dot"></span>
+          <span class="flip-dot"></span>
+        </div>
+
+        <!-- Ficha Minutos Gigante -->
+        <div class="flip-card flip-card-giant" id="flipMinutesCard">
+          <div class="card-half card-top">
+            <span class="digit-text" id="flipMinutesTop">00</span>
+          </div>
+          <div class="card-half card-bottom">
+            <span class="digit-text" id="flipMinutesBottom">00</span>
+          </div>
+          <div class="card-flap flap-front" id="flipMinutesFlapFront">
+            <span class="digit-text" id="flipMinutesFlapFrontText">00</span>
+          </div>
+          <div class="card-flap flap-back" id="flipMinutesFlapBack">
+            <span class="digit-text" id="flipMinutesFlapBackText">00</span>
+          </div>
+          <div class="hinge hinge-left"></div>
+          <div class="hinge hinge-right"></div>
+          <div class="split-line"></div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ========================================== -->
+    <!-- VISTA 3: RELOJ DIGITAL 7-SEGMENTOS FULL    -->
+    <!-- Pantalla completa con estética LED digital -->
+    <!-- ========================================== -->
+    <div id="viewDigital" class="view-panel view-digital-fullscreen hidden">
+      <button class="btn-icon btn-open-settings btn-floating-settings" title="Settings" aria-label="Settings" data-i18n-aria-label="settings_title">
+        ⚙️
+      </button>
+
+      <!-- Indicador AM / PM en 7-segmentos -->
+      <div id="digitalAmpm" class="digital-7seg-ampm hidden">PM</div>
+
+      <!-- Gran escenario de 4 dígitos de 7 segmentos (800x480) -->
+      <div class="digital-7seg-stage">
+
+        <!-- Dígito H1 -->
+        <svg id="digitH1" class="seven-seg-digit" viewBox="0 0 56 96">
+          <path class="seg seg-a" d="M 9,3 L 47,3 L 41,9 L 15,9 Z" />
+          <path class="seg seg-b" d="M 48,4 L 53,9 L 49,43 L 43,39 L 42,10 Z" />
+          <path class="seg seg-c" d="M 49,49 L 53,53 L 48,88 L 42,82 L 43,45 Z" />
+          <path class="seg seg-d" d="M 15,83 L 41,83 L 47,89 L 9,89 Z" />
+          <path class="seg seg-e" d="M 14,45 L 14,82 L 8,88 L 3,53 L 7,49 Z" />
+          <path class="seg seg-f" d="M 14,10 L 13,39 L 7,43 L 3,9 L 8,4 Z" />
+          <path class="seg seg-g" d="M 14,42 L 42,42 L 46,46 L 42,50 L 14,50 L 10,46 Z" />
+        </svg>
+
+        <!-- Dígito H2 -->
+        <svg id="digitH2" class="seven-seg-digit" viewBox="0 0 56 96">
+          <path class="seg seg-a" d="M 9,3 L 47,3 L 41,9 L 15,9 Z" />
+          <path class="seg seg-b" d="M 48,4 L 53,9 L 49,43 L 43,39 L 42,10 Z" />
+          <path class="seg seg-c" d="M 49,49 L 53,53 L 48,88 L 42,82 L 43,45 Z" />
+          <path class="seg seg-d" d="M 15,83 L 41,83 L 47,89 L 9,89 Z" />
+          <path class="seg seg-e" d="M 14,45 L 14,82 L 8,88 L 3,53 L 7,49 Z" />
+          <path class="seg seg-f" d="M 14,10 L 13,39 L 7,43 L 3,9 L 8,4 Z" />
+          <path class="seg seg-g" d="M 14,42 L 42,42 L 46,46 L 42,50 L 14,50 L 10,46 Z" />
+        </svg>
+
+        <!-- Puntos centrales (Colon LED parpadeante) -->
+        <div class="seven-seg-colon">
+          <span class="colon-square"></span>
+          <span class="colon-square"></span>
+        </div>
+
+        <!-- Dígito M1 -->
+        <svg id="digitM1" class="seven-seg-digit" viewBox="0 0 56 96">
+          <path class="seg seg-a" d="M 9,3 L 47,3 L 41,9 L 15,9 Z" />
+          <path class="seg seg-b" d="M 48,4 L 53,9 L 49,43 L 43,39 L 42,10 Z" />
+          <path class="seg seg-c" d="M 49,49 L 53,53 L 48,88 L 42,82 L 43,45 Z" />
+          <path class="seg seg-d" d="M 15,83 L 41,83 L 47,89 L 9,89 Z" />
+          <path class="seg seg-e" d="M 14,45 L 14,82 L 8,88 L 3,53 L 7,49 Z" />
+          <path class="seg seg-f" d="M 14,10 L 13,39 L 7,43 L 3,9 L 8,4 Z" />
+          <path class="seg seg-g" d="M 14,42 L 42,42 L 46,46 L 42,50 L 14,50 L 10,46 Z" />
+        </svg>
+
+        <!-- Dígito M2 -->
+        <svg id="digitM2" class="seven-seg-digit" viewBox="0 0 56 96">
+          <path class="seg seg-a" d="M 9,3 L 47,3 L 41,9 L 15,9 Z" />
+          <path class="seg seg-b" d="M 48,4 L 53,9 L 49,43 L 43,39 L 42,10 Z" />
+          <path class="seg seg-c" d="M 49,49 L 53,53 L 48,88 L 42,82 L 43,45 Z" />
+          <path class="seg seg-d" d="M 15,83 L 41,83 L 47,89 L 9,89 Z" />
+          <path class="seg seg-e" d="M 14,45 L 14,82 L 8,88 L 3,53 L 7,49 Z" />
+          <path class="seg seg-f" d="M 14,10 L 13,39 L 7,43 L 3,9 L 8,4 Z" />
+          <path class="seg seg-g" d="M 14,42 L 42,42 L 46,46 L 42,50 L 14,50 L 10,46 Z" />
+        </svg>
+
+      </div>
+    </div>
+
+  </div>
+
+  <div id="connectionWarning" class="connection-warning hidden" role="status"></div>
+  <div id="settingsModal" class="modal-overlay hidden">
+    {% include '_settings_form.html' %}
+  </div>
+</body>
+</html>

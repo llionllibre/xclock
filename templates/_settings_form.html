@@ -1,0 +1,120 @@
+<form id="settingsForm" class="modal-card">
+  <div class="modal-header">
+    <div class="modal-title-group">
+      <span class="modal-icon" aria-hidden="true">⚙️</span>
+      <h2 data-i18n="settings_title">Xclock Settings</h2>
+    </div>
+    {% if standalone %}
+    <a href="/" class="btn-secondary" data-i18n="back_to_clock">Back to clock</a>
+    {% else %}
+    <button id="btnCloseSettings" type="button" class="btn-close" data-i18n-aria-label="close" aria-label="Close">✕</button>
+    {% endif %}
+  </div>
+
+  <fieldset id="settingsFields" class="modal-body" disabled>
+    <div class="settings-group">
+      <label class="settings-label" data-i18n="lang_label">Language</label>
+      <div class="format-selector-grid">
+        {% for value, label in [('en', 'English'), ('es', 'Español')] %}
+        <label class="format-card-option">
+          <input type="radio" name="languageChoice" value="{{ value }}">
+          <span class="format-title">{{ label }}</span>
+        </label>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="settings-group">
+      <label class="settings-label" data-i18n="view_label">Screen layout</label>
+      <div class="view-selector-grid-3">
+        {% for value, key in [('default', 'dashboard'), ('flip', 'flip'), ('digital', 'digital')] %}
+        <label class="view-card-option">
+          <input type="radio" name="viewChoice" value="{{ value }}">
+          <div class="view-card-content">
+            <span class="view-title" data-i18n="view_{{ key }}_title"></span>
+            <span class="view-subtitle" data-i18n="view_{{ key }}_desc"></span>
+          </div>
+        </label>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="settings-group">
+      <label class="settings-label" data-i18n="color_label">LED color</label>
+      <div class="color-selector-grid">
+        {% for color in ['green', 'blue', 'red', 'random'] %}
+        <label class="color-option-btn">
+          <input type="radio" name="digitalColorChoice" value="{{ color }}">
+          <span class="color-dot bg-{{ color }}"></span>
+          <span class="color-name" data-i18n="color_{{ color }}"></span>
+        </label>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="settings-group">
+      <label class="settings-label" data-i18n="format_label">Time format</label>
+      <div class="format-selector-grid">
+        {% for value, key in [('24h', '24h'), ('12h', '12h')] %}
+        <label class="format-card-option">
+          <input type="radio" name="timeFormatChoice" value="{{ value }}">
+          <div>
+            <strong class="format-title" data-i18n="format_{{ key }}_title"></strong>
+            <span class="format-desc" data-i18n="format_{{ key }}_desc"></span>
+          </div>
+        </label>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="settings-group">
+      <label class="settings-label" for="citySearchInput" data-i18n="city_label">Outdoor city</label>
+      <div class="search-box-wrapper">
+        <input type="text" id="citySearchInput" class="form-input" data-i18n-placeholder="city_placeholder" autocomplete="off">
+        <div id="citySearchResults" class="search-results-dropdown hidden" aria-live="polite"></div>
+      </div>
+      <div class="current-selection-badge">
+        <span data-i18n="city_current">Current city</span>: <strong id="currentCityLabel"></strong>
+      </div>
+      <p class="settings-desc"><span data-i18n="timezone_label">Clock and night mode timezone</span>: <span id="currentTimezoneLabel"></span></p>
+    </div>
+
+    <div class="settings-group">
+      <div class="toggle-row">
+        <div>
+          <label for="nightAutoToggle" class="settings-label-inline" data-i18n="night_auto_title">Automatic night mode</label>
+          <p class="settings-desc" data-i18n="night_auto_desc"></p>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="nightAutoToggle" data-i18n-aria-label="night_auto_title" aria-label="Automatic night mode">
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div id="nightHoursRow" class="hours-row">
+        <label class="hour-field"><span data-i18n="night_start">Start</span><select id="nightStartHour" class="form-select"></select></label>
+        <label class="hour-field"><span data-i18n="night_end">End</span><select id="nightEndHour" class="form-select"></select></label>
+      </div>
+      <div id="nightManualRow" class="toggle-row hidden">
+        <div>
+          <label for="nightManualToggle" class="settings-label-inline" data-i18n="night_manual_title">Manual night mode</label>
+          <p class="settings-desc" data-i18n="night_manual_desc"></p>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="nightManualToggle" data-i18n-aria-label="night_manual_title" aria-label="Manual night mode">
+          <span class="slider"></span>
+        </label>
+      </div>
+    </div>
+  </fieldset>
+
+  <div class="modal-footer">
+    <span id="saveStatus" class="save-status" role="status" aria-live="polite"></span>
+    <div class="footer-actions">
+      <button id="btnRetrySettings" type="button" class="btn-secondary hidden" data-i18n="retry">Retry</button>
+      {% if not standalone %}
+      <button id="btnCancelSettings" type="button" class="btn-secondary" data-i18n="btn_cancel">Cancel</button>
+      {% endif %}
+      <button id="btnSaveSettings" type="submit" class="btn-primary" data-i18n="btn_save" disabled>Save settings</button>
+    </div>
+  </div>
+</form>

@@ -1,6 +1,6 @@
 #!/bin/bash
 # ========================================================
-# Script de instalación automática de Xclock en Raspberry Pi
+# Automatic installation script for Xclock on Raspberry Pi
 # ========================================================
 
 set -e
@@ -9,29 +9,29 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 USER_NAME=$(whoami)
 
 echo "========================================================"
-echo "    Instalando Xclock en Raspberry Pi ($DIR)             "
+echo "    Installing Xclock on Raspberry Pi ($DIR)             "
 echo "========================================================"
 
-# 1. Instalar dependencias del sistema operativo
-echo "[1/4] Instalando paquetes del sistema..."
+# 1. Install system dependencies
+echo "[1/4] Installing system packages..."
 sudo apt update
 sudo apt install -y python3 python3-pip python3-venv
 
-# 2. Crear entorno virtual de Python
-echo "[2/4] Creando entorno virtual de Python..."
+# 2. Create Python virtual environment
+echo "[2/4] Creating Python virtual environment..."
 if [ ! -d "$DIR/venv" ]; then
     python3 -m venv "$DIR/venv"
 fi
 
-# 3. Instalar librerías de Python
-echo "[3/4] Instalando dependencias de Python (Flask, requests, catt)..."
+# 3. Install Python libraries
+echo "[3/4] Installing Python dependencies (Flask, requests, catt)..."
 "$DIR/venv/bin/pip" install --upgrade pip
 "$DIR/venv/bin/pip" install -r "$DIR/requirements.txt"
 
-# 4. Configurar servicios de arranque automático con systemd
-echo "[4/4] Configurando servicios systemd para arranque automático..."
+# 4. Configure auto-start services with systemd
+echo "[4/4] Configuring systemd services for auto-start..."
 
-# Servicio para el Servidor Flask
+# Service for the Flask Web Server
 sudo tee /etc/systemd/system/xclock-server.service > /dev/null <<EOF
 [Unit]
 Description=Xclock Flask Web Server
@@ -50,7 +50,7 @@ RestartSec=5
 WantedBy=multi-user.target
 EOF
 
-# Servicio para el Gestor de Cast (Watchdog)
+# Service for the Cast Manager (Watchdog)
 sudo tee /etc/systemd/system/xclock-cast.service > /dev/null <<EOF
 [Unit]
 Description=Xclock Cast Watchdog
@@ -69,7 +69,7 @@ RestartSec=10
 WantedBy=multi-user.target
 EOF
 
-# Recargar y activar servicios
+# Reload and enable services
 sudo systemctl daemon-reload
 sudo systemctl enable xclock-server.service
 sudo systemctl enable xclock-cast.service
@@ -78,10 +78,10 @@ sudo systemctl restart xclock-server.service
 sudo systemctl restart xclock-cast.service
 
 echo "========================================================"
-echo " ¡Instalación completada con éxito!                     "
-echo " Los servicios 'xclock-server' y 'xclock-cast' están    "
-echo " activos y configurados para arrancar automáticamente.  "
-echo " Puedes comprobar el estado con:                        "
-echo "   sudo systemctl status xclock-server                  "
-echo "   sudo systemctl status xclock-cast                    "
+echo " Installation completed successfully!                    "
+echo " The 'xclock-server' and 'xclock-cast' services are      "
+echo " active and configured to start automatically.           "
+echo " You can check the status with:                          "
+echo "   sudo systemctl status xclock-server                   "
+echo "   sudo systemctl status xclock-cast                     "
 echo "========================================================"

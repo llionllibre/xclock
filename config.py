@@ -1,30 +1,34 @@
 """
-Archivo de configuración para Xclock.
-Modifica estos valores con las coordenadas de tu localidad y los datos de tu reloj/Google Nest.
+Configuration settings for Xclock.
+Adjust these values to configure your Xiaomi Clock, coordinates, and optional Google Nest integration.
 """
 
-# Configuración del Reloj
-CLOCK_NAME_OR_IP = "Mi Smart Clock"  # Nombre en Google Home o IP del reloj Xiaomi
+# Default Language ('en' for English, 'es' for Spanish)
+DEFAULT_LANGUAGE = "en"
+
+# Clock Target Settings
+CLOCK_NAME_OR_IP = "Mi Smart Clock"  # Google Home device name or local IP address of the Xiaomi Clock
 SERVER_PORT = 5000
 
-# Configuración de Ubicación para Temperatura Exterior (Open-Meteo)
-# Por defecto: Madrid, España (Modifícalas por las de tu ciudad)
-LATITUDE = 40.4168
-LONGITUDE = -3.7038
+# Default Location Coordinates for Outdoor Weather (Open-Meteo)
+# Default: Leon, Spain (Can also be adjusted via Settings UI)
+LATITUDE = 42.5987
+LONGITUDE = -5.5671
 TIMEZONE = "Europe/Madrid"
 
-# Intervalo de actualización del tiempo exterior en segundos (10 minutos)
+# Outdoor weather cache duration in seconds (10 minutes)
 WEATHER_CACHE_SECONDS = 600
+DISPLAY_HEARTBEAT_TIMEOUT = 60
 
-# Configuración de Modo Noche (Atenuación automática)
-NIGHT_MODE_START_HOUR = 23  # 23:00
-NIGHT_MODE_END_HOUR = 7     # 07:00
+# Night Mode Configuration (Warm amber auto-dimming)
+NIGHT_MODE_START_HOUR = 23  # 23:00 (11 PM)
+NIGHT_MODE_END_HOUR = 7     # 07:00 (7 AM)
 
-# Configuración de Google Nest (Smart Device Management API)
-# Si aún no tienes las credenciales de Google Cloud, déjalas vacías y usará datos simulados/de prueba.
+# Google Nest Configuration (Smart Device Management API)
+# Leave NEST_ENABLED = False to display "Disabled" without simulated measurements
 NEST_ENABLED = False
 NEST_CLIENT_ID = ""
 NEST_CLIENT_SECRET = ""
 NEST_PROJECT_ID = ""
 NEST_REFRESH_TOKEN = ""
-NEST_DEVICE_ID = ""  # ID del termostato en la API de Google Nest
+NEST_DEVICE_ID = ""  # Thermostat Device ID from Google SDM API
