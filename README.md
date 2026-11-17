@@ -103,10 +103,18 @@ providing it. The `tzdata` dependency supplies IANA timezone data where needed.
    ```
 The installer will create the virtual environment and configure the `xclock-server` and `xclock-cast` services with **systemd** so it starts up and casts automatically when the board powers on.
 
+Python packages are downloaded directly from the official PyPI index over HTTPS.
+For these commands only, pip ignores local configuration and `PIP_*` options so
+Raspberry Pi OS's additional piwheels index cannot cause TLS download failures.
+Certificate verification remains enabled; no system pip configuration is changed.
+Networks requiring custom pip proxy or CA settings must supply `--proxy` or
+`--cert` explicitly to the installation commands.
+
 For an existing installation, update dependencies and restart both services:
 
 ```bash
-./venv/bin/pip install -r requirements.txt
+PIP_CONFIG_FILE=/dev/null ./venv/bin/python -m pip --isolated install \
+    --index-url https://pypi.org/simple -r requirements.txt
 sudo systemctl restart xclock-server xclock-cast
 ```
 

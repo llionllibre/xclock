@@ -25,8 +25,10 @@ fi
 
 # 3. Install Python libraries
 echo "[3/4] Installing Python dependencies (Flask, requests, catt)..."
-"$DIR/venv/bin/pip" install --upgrade pip
-"$DIR/venv/bin/pip" install -r "$DIR/requirements.txt"
+PIP_CONFIG_FILE=/dev/null "$DIR/venv/bin/python" -m pip --isolated install \
+    --index-url https://pypi.org/simple --upgrade pip
+PIP_CONFIG_FILE=/dev/null "$DIR/venv/bin/python" -m pip --isolated install \
+    --index-url https://pypi.org/simple -r "$DIR/requirements.txt"
 
 # 4. Configure auto-start services with systemd
 echo "[4/4] Configuring systemd services for auto-start..."
